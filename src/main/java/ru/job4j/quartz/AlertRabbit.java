@@ -20,7 +20,7 @@ public class AlertRabbit {
     private static final DateTimeFormatter FORMATTER =
             DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
-    private Connection cn;
+    private static Connection cn;
 
     public AlertRabbit() {
         initConnection();
@@ -72,8 +72,9 @@ public class AlertRabbit {
         @Override
         public void execute(JobExecutionContext context) {
             System.out.println("Rabbit runs here ...");
-            String  name = context.getJobDetail().getJobDataMap().getKeys()[0];
-            Connection cn = (Connection) context.getJobDetail().getJobDataMap().get(name);
+            JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
+            String  name = jobDataMap.getKeys()[0];
+            Connection cn = (Connection) jobDataMap.get(name);
             try (PreparedStatement statement = cn.prepareStatement(
                     "insert into rabbit(name, created_date) values (?, ?)")) {
                 statement.setString(1, name);
@@ -105,12 +106,12 @@ public class AlertRabbit {
         AlertRabbit alertRabbit = new AlertRabbit();
         try {
             Scheduler scheduler = alertRabbit.startScheduler();
-            alertRabbit.addNewJobToScheduler("connection1", scheduler);
-            alertRabbit.addNewJobToScheduler("connection2", scheduler);
+            alertRabbit.addNewJobToScheduler("job1", scheduler);
+            alertRabbit.addNewJobToScheduler("job2", scheduler);
             Thread.sleep(10000);
             scheduler.shutdown();
             alertRabbit.showResult();
-            alertRabbit.cn.close();
+            cn.close();
         } catch (Exception se) {
             se.printStackTrace();
         }
