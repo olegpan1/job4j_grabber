@@ -14,14 +14,17 @@ public class SqlRuParse {
             DateTimeFormatter.ofPattern("dd MMMM yy, HH:mm");
 
     public static void main(String[] args) throws Exception {
-        Document doc = Jsoup.connect("https://www.sql.ru/forum/job-offers").get();
-        Elements row = doc.select(".postslisttopic");
-        for (Element td : row) {
-            if (td.hasParent()) {
-                Element parent = td.parent();
-                System.out.println(parent.child(1).child(0).attr("href"));
-                System.out.println(parent.child(1).text());
-                System.out.println(FORMATTER.format(new SqlRuDateTimeParser().parse(parent.child(5).text())));
+        for (int i = 1; i < 6; i++) {
+            String page = "/" + i;
+            Document doc = Jsoup.connect("https://www.sql.ru/forum/job-offers" + page).get();
+            Elements row = doc.select(".postslisttopic");
+            for (Element td : row) {
+                if (td.hasParent()) {
+                    Element parent = td.parent();
+                    System.out.println(parent.child(1).child(0).attr("href"));
+                    System.out.println(parent.child(1).text());
+                    System.out.println(FORMATTER.format(new SqlRuDateTimeParser().parse(parent.child(5).text())));
+                }
             }
         }
     }
