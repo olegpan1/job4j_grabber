@@ -1,14 +1,42 @@
 package ru.job4j.quartz;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import ru.job4j.utils.SqlRuDateTimeParser;
+
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Post {
+    private static final DateTimeFormatter FORMATTER =
+            DateTimeFormatter.ofPattern("dd MMMM yy, HH:mm");
+
     int id;
     String title;
     String link;
     String description;
     LocalDateTime created;
+
+
+    public Elements loadPostDetails(String post) throws IOException {
+        Document doc = Jsoup.connect(post).get();
+        return doc.select(".msgTable");
+    }
+
+    public static void main(String[] args) throws IOException {
+        Elements row = new Post().loadPostDetails(
+                "https://www.sql.ru/forum/1325330/lidy-be-fe-senior-cistemnye-analitiki-qa-i-devops-moskva-do-200t");
+        for (Element parent : row) {
+            System.out.println(parent.child(0).child(1).child(1).text());
+            System.out.println(FORMATTER.format(new SqlRuDateTimeParser()
+                    .parse(parent.child(0).child(2).child(0).text())));
+            System.out.println();
+        }
+    }
 
     @Override
     public boolean equals(Object o) {
