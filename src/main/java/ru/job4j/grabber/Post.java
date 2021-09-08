@@ -1,4 +1,4 @@
-package ru.job4j.quartz;
+package ru.job4j.grabber;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -15,11 +15,11 @@ public class Post {
     private static final DateTimeFormatter FORMATTER =
             DateTimeFormatter.ofPattern("dd MMMM yy, HH:mm");
 
-    int id;
-    String title;
-    String link;
-    String description;
-    LocalDateTime created;
+    private int id;
+    private String title;
+    private String link;
+    private String description;
+    private LocalDateTime created;
 
 
     public Elements loadPostDetails(String post) throws IOException {
@@ -50,13 +50,12 @@ public class Post {
         return id == post.id
                 && Objects.equals(title, post.title)
                 && Objects.equals(link, post.link)
-                && Objects.equals(description, post.description)
                 && Objects.equals(created, post.created);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, link, description, created);
+        return Objects.hash(id, title, link, created);
     }
 
     @Override
