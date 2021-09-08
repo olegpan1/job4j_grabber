@@ -21,21 +21,66 @@ public class Post {
     private String description;
     private LocalDateTime created;
 
+    public Post() {
+    }
 
-    public Elements loadPostDetails(String post) throws IOException {
-        Document doc = Jsoup.connect(post).get();
+    public Post(int id, String title, String link, String description, LocalDateTime created) {
+        this.id = id;
+        this.title = title;
+        this.link = link;
+        this.description = description;
+        this.created = created;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+
+    public Elements loadPostDetails(String post) {
+        Document doc = new Document(post);
+        try {
+            doc = Jsoup.connect(post).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return doc.select(".msgTable");
     }
 
-    public static void main(String[] args) throws IOException {
-        Elements row = new Post().loadPostDetails(
-                "https://www.sql.ru/forum/1325330/lidy-be-fe-senior-cistemnye-analitiki-qa-i-devops-moskva-do-200t");
-        for (Element parent : row) {
-            System.out.println(parent.child(0).child(1).child(1).text());
-            System.out.println(FORMATTER.format(new SqlRuDateTimeParser()
-                    .parse(parent.child(0).child(2).child(0).text())));
-            System.out.println();
-        }
+    public Post getPost(String link) {
+        Elements row = loadPostDetails(link);
+        Element parent = row.get(0).child(0);
+        id = (Integer.parseInt(parent.child(0).child(0).attr("id").substring(2)));
+        title = parent.child(0).child(0).text();
+        description = parent.child(1).child(1).text();
+        created = new SqlRuDateTimeParser().parse(parent.child(2).child(0).text());
+        return new Post(id, title, link, description, created);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new Post().getPost(
+                "https://www.sql.ru/forum/1325330/lidy-be-fe-senior-cistemnye-analitiki-qa-i-devops-moskva-do-200t"));
+
     }
 
     @Override
@@ -61,12 +106,12 @@ public class Post {
     @Override
     public String toString() {
         String s = System.lineSeparator();
-        return "Post{"
+        return "Post{" + s
                 + "id = " + id + s
                 + "title = " + title + s
                 + "link = " + link + s
                 + "description = " + description + s
-                + "created = " + created + s
+                + "created = " + FORMATTER.format(created) + s
                 + '}';
     }
 }
