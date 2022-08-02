@@ -56,7 +56,6 @@ public class SqlRuParse implements Parse {
         return elements;
     }
 
-    @Override
     public Post detail(String link) {
         Element parent = loadPostDetails(link);
         return new Post(0,
