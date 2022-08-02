@@ -1,6 +1,5 @@
 package ru.job4j.grabber;
 
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,11 +13,24 @@ public class HabrCareerParse {
 
     private static final String PAGE_LINK = String.format("%s/vacancies/java_developer?page=", SOURCE_LINK);
 
-    public static void main(String[] args) throws IOException {
+    private String retrieveDescription(String link) {
+        Document doc = new Document(link);
+        try {
+            doc = Jsoup.connect(link).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return doc.select(".style-ugc").text();
+    }
 
+    public static void main(String[] args) {
         for (int i = 1; i < 6; i++) {
-            Connection connection = Jsoup.connect(PAGE_LINK + i);
-            Document document = connection.get();
+            Document document = new Document(PAGE_LINK);
+            try {
+                document = Jsoup.connect(PAGE_LINK + i).get();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             Elements rows = document.select(".vacancy-card__inner");
             rows.forEach(row -> {
                 Element titleElement = row.select(".vacancy-card__title").first();
@@ -27,7 +39,8 @@ public class HabrCareerParse {
                 String date = row.select(".vacancy-card__date")
                         .first().child(0).attr("datetime").split("T")[0];
                 String link = String.format("%s%s", SOURCE_LINK, linkElement.attr("href"));
-                System.out.printf("%s %s%n %s%n%n", date, vacancyName, link);
+                String vacancyDescription = new HabrCareerParse().retrieveDescription(link);
+                System.out.printf("%s %s%n %s%n %s%n%n", date, vacancyName, vacancyDescription, link);
             });
         }
     }
