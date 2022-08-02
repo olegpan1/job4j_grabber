@@ -21,16 +21,6 @@ public class HabrCareerParse implements Parse {
         this.dateTimeParser = dateTimeParser;
     }
 
-    private String retrieveDescription(String link) {
-        Document doc = new Document(link);
-        try {
-            doc = Jsoup.connect(link).get();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return doc.select(".style-ugc").text();
-    }
-
     @Override
     public List<Post> list(String link) {
         List<Post> resultList = new ArrayList<>();
@@ -63,6 +53,16 @@ public class HabrCareerParse implements Parse {
             resultList.add(new Post(vacancyName, vacancyLink, vacancyDescription, dateTimeParser.parse(date)));
         });
         return resultList;
+    }
+
+    private String retrieveDescription(String link) {
+        Document doc = new Document(link);
+        try {
+            doc = Jsoup.connect(link).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return doc.select(".style-ugc").text();
     }
 
     public static void main(String[] args) {
