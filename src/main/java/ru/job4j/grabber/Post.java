@@ -77,6 +77,7 @@ public class Post {
                 + "id = " + id + s
                 + "title = " + title + s
                 + "link = " + link + s
+                + "description = " + description + s
                 + "created = " + FORMATTER.format(created) + s
                 + '}';
     }
