@@ -22,8 +22,6 @@ public class Grabber implements Grab {
 
     private final Properties cfg = new Properties();
 
-    private static int counter = 1;
-
     public Store store() {
         return new PsqlStore(cfg);
     }
@@ -69,9 +67,6 @@ public class Grabber implements Grab {
             for (Post post : vacancies) {
                 store.save(post);
             }
-            System.out.print("\n\n");
-            System.out.println("COUNTER OF PARSE: " + counter++);
-            System.out.print("\n\n");
         }
     }
 
