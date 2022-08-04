@@ -2,8 +2,8 @@ package ru.job4j.grabber;
 
 import ru.job4j.utils.HabrCareerDateTimeParser;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,9 +60,9 @@ public class PsqlStore implements Store, AutoCloseable {
         try (PreparedStatement statement =
                      cnn.prepareStatement("select * from post where id=?;")) {
             statement.setInt(1, id);
-            try (ResultSet PostById = statement.executeQuery()) {
-                if (PostById.next()) {
-                    post = createPost(PostById);
+            try (ResultSet postById = statement.executeQuery()) {
+                if (postById.next()) {
+                    post = createPost(postById);
                 }
             }
         } catch (SQLException throwables) {
@@ -88,21 +88,24 @@ public class PsqlStore implements Store, AutoCloseable {
 
     public static void main(String[] args) {
         Properties config = new Properties();
-        try (FileInputStream in = new FileInputStream("./psqlStore.properties")) {
+        try (InputStream in = PsqlStore.class.getClassLoader()
+                .getResourceAsStream("psqlStore.properties")) {
             config.load(in);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        PsqlStore psqlStore = new PsqlStore(config);
+        try (PsqlStore psqlStore = new PsqlStore(config)) {
+            HabrCareerParse habrCareerParse = new HabrCareerParse(new HabrCareerDateTimeParser());
+            for (Post post : habrCareerParse.list("https://career.habr.com/vacancies/java_developer?page=")) {
+                psqlStore.save(post);
+            }
 
-        HabrCareerParse habrCareerParse = new HabrCareerParse(new HabrCareerDateTimeParser());
-        for (Post post : habrCareerParse.list("https://career.habr.com/vacancies/java_developer?page=")) {
-            psqlStore.save(post);
+            List<Post> all = psqlStore.getAll();
+            System.out.println("Number of entries in the database of vacancies after parsing: " + all.size());
+
+            System.out.println("Find by ID: " + psqlStore.findById(3));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        List<Post> all = psqlStore.getAll();
-        System.out.println("Number of entries in the database of vacancies after parsing: " + all.size());
-
-        System.out.println("Find by ID: " + psqlStore.findById(3));
     }
 }
