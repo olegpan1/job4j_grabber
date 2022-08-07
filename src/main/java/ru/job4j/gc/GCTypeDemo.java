@@ -13,4 +13,5 @@ public class GCTypeDemo {
             ).repeat(length);
         }
     }
+
 }
