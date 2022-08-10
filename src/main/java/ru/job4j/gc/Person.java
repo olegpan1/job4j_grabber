@@ -10,11 +10,6 @@ public class Person {
         this.name = name;
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        System.out.printf("Removed %d %s%n", age, name);
-    }
-
     public int getAge() {
         return age;
     }
