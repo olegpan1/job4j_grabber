@@ -1,0 +1,91 @@
+Перед рефакторингом
+
+-XX:+UseSerialGC -Xmx15m -Xms15m -Xlog:gc:log.txt
+
+[0.027s][info][gc] Using Serial
+[2.900s][info][gc] GC(0) Pause Young (Allocation Failure) 4M->2M(15M) 8.380ms
+[3.323s][info][gc] GC(1) Pause Young (Allocation Failure) 6M->3M(15M) 9.196ms
+[31.339s][info][gc] GC(2) Pause Young (Allocation Failure) 7M->3M(15M) 3.346ms
+[31.410s][info][gc] GC(3) Pause Young (Allocation Failure) 7M->6M(15M) 6.454ms
+[31.471s][info][gc] GC(4) Pause Young (Allocation Failure) 11M->10M(15M) 8.328ms
+[31.499s][info][gc] GC(5) Pause Young (Allocation Failure) 15M->15M(15M) 0.049ms
+[31.532s][info][gc] GC(6) Pause Full (Allocation Failure) 15M->12M(15M) 32.651ms
+[31.574s][info][gc] GC(7) Pause Full (Allocation Failure) 15M->6M(15M) 17.949ms
+[69.439s][info][gc] GC(8) Pause Young (Allocation Failure) 10M->6M(15M) 3.849ms
+[96.865s][info][gc] GC(9) Pause Young (Allocation Failure) 10M->7M(15M) 2.448ms
+[96.891s][info][gc] GC(10) Pause Young (Allocation Failure) 11M->11M(15M) 0.068ms
+[96.916s][info][gc] GC(11) Pause Full (Allocation Failure) 11M->7M(15M) 25.422ms
+[96.941s][info][gc] GC(12) Pause Young (Allocation Failure) 12M->12M(15M) 0.051ms
+[96.963s][info][gc] GC(13) Pause Full (Allocation Failure) 12M->7M(15M) 21.215ms
+[96.993s][info][gc] GC(14) Pause Young (Allocation Failure) 11M->11M(15M) 0.075ms
+[97.020s][info][gc] GC(15) Pause Full (Allocation Failure) 11M->7M(15M) 26.863ms
+[122.480s][info][gc] GC(16) Pause Young (Allocation Failure) 11M->11M(15M) 0.051ms
+[122.494s][info][gc] GC(17) Pause Full (Allocation Failure) 11M->4M(15M) 14.464ms
+
+Вывод: Регулярный запуск full очистки
+
+После рефакторинга:
+
+Ref1). Удалил finalize и переопределил equals/hashcode в Comment, Post, User.
+
+[0.021s][info][gc] Using Serial
+[4.636s][info][gc] GC(0) Pause Young (Allocation Failure) 4M->2M(15M) 7.779ms
+[5.030s][info][gc] GC(1) Pause Young (Allocation Failure) 6M->3M(15M) 8.972ms
+[30.369s][info][gc] GC(2) Pause Young (Allocation Failure) 7M->3M(15M) 2.840ms
+[30.415s][info][gc] GC(3) Pause Young (Allocation Failure) 7M->3M(15M) 0.944ms
+[30.438s][info][gc] GC(4) Pause Young (Allocation Failure) 7M->3M(15M) 0.983ms
+[40.105s][info][gc] GC(5) Pause Young (Allocation Failure) 7M->3M(15M) 1.527ms
+[79.146s][info][gc] GC(6) Pause Young (Allocation Failure) 7M->3M(15M) 0.898ms
+[95.640s][info][gc] GC(7) Pause Young (Allocation Failure) 7M->3M(15M) 1.011ms
+[95.657s][info][gc] GC(8) Pause Young (Allocation Failure) 7M->3M(15M) 0.953ms
+[95.681s][info][gc] GC(9) Pause Young (Allocation Failure) 7M->3M(15M) 0.753ms
+[133.200s][info][gc] GC(10) Pause Young (Allocation Failure) 7M->3M(15M) 0.953ms
+
+Вывод: Full очистка не запускается, минимальный размер кучи после очисток уменьшился
+
+
+Ref2). Убрал static у List в UserGenerator,  у Map в PostStore, у List в CommentGenerator
+
+[0.019s][info][gc] Using Serial
+[8.531s][info][gc] GC(0) Pause Young (Allocation Failure) 4M->2M(15M) 6.478ms
+[8.837s][info][gc] GC(1) Pause Young (Allocation Failure) 6M->3M(15M) 7.288ms
+[29.357s][info][gc] GC(2) Pause Young (Allocation Failure) 7M->3M(15M) 3.227ms
+[29.391s][info][gc] GC(3) Pause Young (Allocation Failure) 7M->3M(15M) 1.080ms
+[29.412s][info][gc] GC(4) Pause Young (Allocation Failure) 7M->3M(15M) 0.433ms
+[45.913s][info][gc] GC(5) Pause Young (Allocation Failure) 7M->3M(15M) 0.643ms
+[84.947s][info][gc] GC(6) Pause Young (Allocation Failure) 7M->3M(15M) 0.803ms
+[94.712s][info][gc] GC(7) Pause Young (Allocation Failure) 7M->3M(15M) 0.547ms
+[94.732s][info][gc] GC(8) Pause Young (Allocation Failure) 7M->3M(15M) 0.831ms
+[99.963s][info][gc] GC(9) Pause Young (Allocation Failure) 7M->3M(15M) 0.662ms
+[141.000s][info][gc] GC(10) Pause Young (Allocation Failure) 7M->3M(15M) 0.675ms
+
+Вывод: изменений не замечено
+
+Ref3). Заменил + на StringJoiner  в UserGenerator и CommentGenerator
+
+[0.018s][info][gc] Using Serial
+[2.038s][info][gc] GC(0) Pause Young (Allocation Failure) 4M->2M(15M) 9.216ms
+[2.456s][info][gc] GC(1) Pause Young (Allocation Failure) 6M->3M(15M) 9.191ms
+[29.470s][info][gc] GC(2) Pause Young (Allocation Failure) 7M->3M(15M) 2.556ms
+[29.491s][info][gc] GC(3) Pause Young (Allocation Failure) 7M->3M(15M) 0.923ms
+[29.507s][info][gc] GC(4) Pause Young (Allocation Failure) 7M->3M(15M) 1.201ms
+[29.521s][info][gc] GC(5) Pause Young (Allocation Failure) 7M->3M(15M) 0.971ms
+[29.537s][info][gc] GC(6) Pause Young (Allocation Failure) 7M->3M(15M) 1.342ms
+[29.546s][info][gc] GC(7) Pause Young (Allocation Failure) 7M->3M(15M) 0.938ms
+[29.553s][info][gc] GC(8) Pause Young (Allocation Failure) 7M->3M(15M) 0.975ms
+[29.562s][info][gc] GC(9) Pause Young (Allocation Failure) 7M->3M(15M) 0.949ms
+[52.545s][info][gc] GC(10) Pause Young (Allocation Failure) 7M->3M(15M) 1.414ms
+[91.549s][info][gc] GC(11) Pause Young (Allocation Failure) 7M->3M(15M) 1.116ms
+[95.086s][info][gc] GC(12) Pause Young (Allocation Failure) 7M->3M(15M) 0.759ms
+[95.091s][info][gc] GC(13) Pause Young (Allocation Failure) 7M->3M(15M) 0.632ms
+[95.098s][info][gc] GC(14) Pause Young (Allocation Failure) 7M->3M(15M) 0.642ms
+[95.104s][info][gc] GC(15) Pause Young (Allocation Failure) 7M->3M(15M) 0.967ms
+[95.109s][info][gc] GC(16) Pause Young (Allocation Failure) 7M->3M(15M) 0.594ms
+[95.114s][info][gc] GC(17) Pause Young (Allocation Failure) 7M->3M(15M) 0.730ms
+[95.120s][info][gc] GC(18) Pause Young (Allocation Failure) 7M->3M(15M) 0.663ms
+[119.636s][info][gc] GC(19) Pause Young (Allocation Failure) 7M->3M(15M) 1.017ms
+[159.041s][info][gc] GC(20) Pause Young (Allocation Failure) 7M->3M(15M) 1.027ms
+
+Вывод: увеличилось количество очисток
+
+
