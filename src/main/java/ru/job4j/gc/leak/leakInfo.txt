@@ -88,4 +88,29 @@ Ref3). Заменил + на StringJoiner  в UserGenerator и CommentGenerator
 
 Вывод: увеличилось количество очисток
 
+Ref4). Заменил Integer на int
+
+[0.027s][info][gc] Using Serial
+[6.308s][info][gc] GC(0) Pause Young (Allocation Failure) 4M->2M(15M) 6.326ms
+[6.809s][info][gc] GC(1) Pause Young (Allocation Failure) 6M->3M(15M) 9.178ms
+[31.112s][info][gc] GC(2) Pause Young (Allocation Failure) 7M->3M(15M) 3.970ms
+[31.134s][info][gc] GC(3) Pause Young (Allocation Failure) 7M->3M(15M) 1.435ms
+[31.149s][info][gc] GC(4) Pause Young (Allocation Failure) 7M->3M(15M) 0.631ms
+[31.165s][info][gc] GC(5) Pause Young (Allocation Failure) 7M->3M(15M) 0.336ms
+[31.174s][info][gc] GC(6) Pause Young (Allocation Failure) 7M->3M(15M) 0.638ms
+[31.182s][info][gc] GC(7) Pause Young (Allocation Failure) 7M->3M(15M) 0.512ms
+[31.186s][info][gc] GC(8) Pause Young (Allocation Failure) 7M->3M(15M) 0.436ms
+[31.202s][info][gc] GC(9) Pause Young (Allocation Failure) 7M->3M(15M) 0.674ms
+[54.027s][info][gc] GC(10) Pause Young (Allocation Failure) 7M->3M(15M) 0.733ms
+[94.004s][info][gc] GC(11) Pause Young (Allocation Failure) 7M->3M(15M) 0.595ms
+[96.415s][info][gc] GC(12) Pause Young (Allocation Failure) 7M->3M(15M) 0.839ms
+[96.422s][info][gc] GC(13) Pause Young (Allocation Failure) 7M->3M(15M) 0.606ms
+[96.430s][info][gc] GC(14) Pause Young (Allocation Failure) 7M->3M(15M) 0.854ms
+[96.437s][info][gc] GC(15) Pause Young (Allocation Failure) 7M->3M(15M) 0.870ms
+[96.442s][info][gc] GC(16) Pause Young (Allocation Failure) 7M->3M(15M) 0.604ms
+[96.447s][info][gc] GC(17) Pause Young (Allocation Failure) 7M->3M(15M) 0.583ms
+[96.451s][info][gc] GC(18) Pause Young (Allocation Failure) 7M->3M(15M) 0.635ms
+[122.086s][info][gc] GC(19) Pause Young (Allocation Failure) 7M->3M(15M) 0.674ms
+
+Без изменений
 
