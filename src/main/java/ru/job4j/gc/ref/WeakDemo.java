@@ -56,7 +56,7 @@ public class WeakDemo {
         WeakReference<Object> weak = new WeakReference<>(object, queue);
         object = null;
 
-//        System.gc();
+        System.gc();
 
         TimeUnit.SECONDS.sleep(3);
         System.out.println("from link " + weak.get());
