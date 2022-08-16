@@ -1,15 +1,22 @@
-package ru.job4j.cache;
+package ru.job4j;
 
-import java.io.File;
+import ru.job4j.cache.DirFileCache;
+
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.Scanner;
 
 public class Emulator {
     private static final int TO_CASH = 1;
     private static final int FROM_CASH = 2;
 
+    private static final String ENTER_FILE_NAME = "Введите имя файла:";
+    private static final String ENTER_DIR_PATH = "Введите путь к кэшируемым файлам:";
+    private static final String THE_END = "Работа с файлами завершена.";
+    private static final String ADDED_TO_CACHE = "Добавлено в кэш!";
+    private static final String READ_FROM_CASH = "Прочтено из кэша:" + System.lineSeparator();
+    private static final String DOES_NOT_EXIST = " не существует! Повторите ввод:";
     private static final String MENU = """
             Введите 1 для загрузки файла в кэш.
             Введите 2 для чтения файла из кэша.
@@ -17,14 +24,14 @@ public class Emulator {
             """;
 
     public static void main(String[] args) throws IOException {
-        System.out.println("Введите путь к кэшируемым файлам:");
+        System.out.println(ENTER_DIR_PATH);
         Scanner scanner = new Scanner(System.in);
         DirFileCache dirFileCache = getDir(scanner);
 
         System.out.println(MENU);
         int choice = Integer.parseInt(scanner.nextLine());
         while (choice == TO_CASH || choice == FROM_CASH) {
-            System.out.println("Введите имя файла:");
+            System.out.println(ENTER_FILE_NAME);
             if (TO_CASH == choice) {
                 addToCash(scanner, dirFileCache);
             } else {
@@ -33,32 +40,29 @@ public class Emulator {
             System.out.println(MENU);
             choice = Integer.parseInt(scanner.nextLine());
         }
-        System.out.println("Работа с файлами завершена.");
+        System.out.println(THE_END);
     }
 
     private static DirFileCache getDir(Scanner scanner) {
-        String path = check(scanner, new DirFileCache(null));
+        String path = check(scanner, new DirFileCache(""));
         return new DirFileCache(path);
     }
 
-
     private static void addToCash(Scanner scanner, DirFileCache dirFileCache) {
         String fileName = check(scanner, dirFileCache);
-        dirFileCache.put(fileName, dirFileCache.load(fileName));
-        System.out.println("Добавлено в кэш: \n" + dirFileCache.get(fileName));
+        dirFileCache.put(fileName);
+        System.out.println(ADDED_TO_CACHE);
     }
 
     private static void getFromCash(Scanner scanner, DirFileCache dirFileCache) {
         String fileName = check(scanner, dirFileCache);
-        dirFileCache.get(fileName);
-        System.out.println("Прочтено из кэша: \n" + dirFileCache.get(fileName));
+        System.out.println(READ_FROM_CASH + dirFileCache.get(fileName));
     }
 
     private static String check(Scanner scanner, DirFileCache dirFileCache) {
         String path = scanner.nextLine();
-        while (!Files.exists(Paths.get(new File(dirFileCache.getCachingDir(), path)
-                .toString()))) {
-            System.out.println(path + " не существует! Повторите ввод:");
+        while (!Files.exists(Path.of(dirFileCache.getCachingDir(), path))) {
+            System.out.println(path + DOES_NOT_EXIST);
             path = scanner.nextLine();
         }
         return path;
