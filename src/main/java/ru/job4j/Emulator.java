@@ -14,8 +14,7 @@ public class Emulator {
     private static final String ENTER_FILE_NAME = "Введите имя файла:";
     private static final String ENTER_DIR_PATH = "Введите путь к кэшируемым файлам:";
     private static final String THE_END = "Работа с файлами завершена.";
-    private static final String ADDED_TO_CACHE = "Добавлено в кэш!";
-    private static final String READ_FROM_CASH = "Прочтено из кэша:" + System.lineSeparator();
+    private static final String READ_FROM_CASH = "В кэше:" + System.lineSeparator();
     private static final String DOES_NOT_EXIST = " не существует! Повторите ввод:";
     private static final String MENU = """
             Введите 1 для загрузки файла в кэш.
@@ -32,11 +31,7 @@ public class Emulator {
         int choice = Integer.parseInt(scanner.nextLine());
         while (choice == TO_CASH || choice == FROM_CASH) {
             System.out.println(ENTER_FILE_NAME);
-            if (TO_CASH == choice) {
-                addToCash(scanner, dirFileCache);
-            } else {
-                getFromCash(scanner, dirFileCache);
-            }
+            getFromCash(scanner, dirFileCache);
             System.out.println(MENU);
             choice = Integer.parseInt(scanner.nextLine());
         }
@@ -46,12 +41,6 @@ public class Emulator {
     private static DirFileCache getDir(Scanner scanner) {
         String path = check(scanner, new DirFileCache(""));
         return new DirFileCache(path);
-    }
-
-    private static void addToCash(Scanner scanner, DirFileCache dirFileCache) {
-        String fileName = check(scanner, dirFileCache);
-        dirFileCache.put(fileName);
-        System.out.println(ADDED_TO_CACHE);
     }
 
     private static void getFromCash(Scanner scanner, DirFileCache dirFileCache) {
