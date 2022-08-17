@@ -17,12 +17,7 @@ public class WeakDemo {
     }
 
     private static void example1() throws InterruptedException {
-        Object object = new Object() {
-            @Override
-            protected void finalize() {
-                System.out.println("Removed");
-            }
-        };
+        Object object = new Object();
         System.out.println(object);
         WeakReference<Object> weak = new WeakReference<>(object);
         object = null;
@@ -35,10 +30,6 @@ public class WeakDemo {
         List<WeakReference<Object>> objects = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             objects.add(new WeakReference<>(new Object() {
-                @Override
-                protected void finalize() {
-                    System.out.println("Removed!");
-                }
             }));
         }
         System.gc();
@@ -46,12 +37,7 @@ public class WeakDemo {
     }
 
     private static void example3() throws InterruptedException {
-        Object object = new Object() {
-            @Override
-            protected void finalize() {
-                System.out.println("Removed");
-            }
-        };
+        Object object = new Object();
         ReferenceQueue<Object> queue = new ReferenceQueue<>();
         WeakReference<Object> weak = new WeakReference<>(object, queue);
         object = null;

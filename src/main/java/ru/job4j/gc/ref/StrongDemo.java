@@ -16,10 +16,6 @@ public class StrongDemo {
         Object[] objects = new Object[100];
         for (int i = 0; i < 100; i++) {
             objects[i] = new Object() {
-                @Override
-                protected void finalize() {
-                    System.out.println("Object removed!");
-                }
             };
         }
         for (int i = 0; i < 100; i++) {
@@ -34,10 +30,6 @@ public class StrongDemo {
         for (int i = 0; i < 100; i++) {
             Object object = new Object() {
                 Object innerObject = new Object() {
-                    @Override
-                    protected void finalize() {
-                        System.out.println("Remove inner object!");
-                    }
                 };
             };
             objects[i] = object;
